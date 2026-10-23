@@ -1,0 +1,9 @@
+role,players,defining_traits,examples
+Ball-playing centre-back,60,"Clearances, Long passes, Interceptions (PAdj), Pass %","Wes Morgan, Toby Alderweireld, Ashley Williams, Steve Cook, Robert Huth"
+Attacking full-back,52,"Crosses, Prog. passes, Passes, Clearances","Simon Francis, Craig Dawson, Aaron Cresswell, Charlie Daniels, Nacho Monreal"
+Ball-winning midfielder,44,"Tackles won (PAdj), Interceptions (PAdj), Pressures (PAdj), Final-third entries","Andrew Surman, Eric Dier, Glenn Whelan, Daley Blind, Idrissa Gueye"
+Penalty-box striker,36,"Non-pen xG, Aerial duels lost, Box touches, Shots","Harry Kane, Romelu Lukaku, Odion Ighalo, Jamie Vardy, Jermain Defoe"
+Direct dribbling winger,33,"Prog. carries, Dribbles won, Crosses, Times dispossessed","Moussa Sissoko, Georginio Wijnaldum, Marko Arnautović, Anthony Martial, Sadio Mané"
+Deep-lying playmaker,29,"Final-third entries, Recoveries, Passes, Through balls","Darren Fletcher, Yann M'Vila, Mark Noble, Danny Drinkwater, Matt Ritchie"
+Creative playmaker,25,"xA, Passes into box, Through balls, Key passes","Ross Barkley, Mesut Özil, Riyad Mahrez, Christian Eriksen, Cesc Fàbregas"
+Pressing second striker,21,"High pressures, Box touches, Pressures (PAdj), Shots","Troy Deeney, Gylfi Sigurðsson, André Ayew, Dan Gosling, Dele Alli"

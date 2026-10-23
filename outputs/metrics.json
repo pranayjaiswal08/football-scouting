@@ -1,0 +1,14 @@
+{
+  "cutoff_date": "2016-01-02",
+  "players_tested": 203,
+  "candidates": 264,
+  "top1": 0.2808,
+  "top5": 0.6108,
+  "top10": 0.7586,
+  "median_rank": 3.0,
+  "random_top5": 0.0189,
+  "position_only_top5": 0.1181,
+  "n_players": 300,
+  "pca_components": 6,
+  "pca_variance": 0.8599
+}

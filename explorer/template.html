@@ -1,0 +1,353 @@
+<title>Premier League Scout Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: scout's desk — selector bar, then profile radar beside a ranked shortlist, then the league-wide style map and method notes. */
+:root {
+  --bg: #f4f6f3;
+  --panel: #ffffff;
+  --ink: #14201a;
+  --ink-2: #4b5751;
+  --muted: #8a948e;
+  --line: #dfe4df;
+  --grid: #e7ebe6;
+  --pitch: #1d6b45;
+  --s1: #2a78d6;
+  --s2: #eb6834;
+  --s1-soft: rgba(42,120,214,.14);
+  --s2-soft: rgba(235,104,52,.14);
+  --chip: #eaf0ea;
+  --display: "Barlow Condensed", "Arial Narrow", Arial, sans-serif;
+  --body: "Barlow", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111714; --panel: #18201c; --ink: #edf1ee; --ink-2: #b6c0ba; --muted: #7e8a84;
+    --line: #2a3530; --grid: #25302b; --pitch: #4fb685; --s1: #3987e5; --s2: #d95926;
+    --s1-soft: rgba(57,135,229,.22); --s2-soft: rgba(217,89,38,.2); --chip: #213029; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111714; --panel: #18201c; --ink: #edf1ee; --ink-2: #b6c0ba; --muted: #7e8a84;
+  --line: #2a3530; --grid: #25302b; --pitch: #4fb685; --s1: #3987e5; --s2: #d95926;
+  --s1-soft: rgba(57,135,229,.22); --s2-soft: rgba(217,89,38,.2); --chip: #213029; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 48px; display: grid; gap: 22px; }
+header { display: grid; gap: 6px; }
+.eyebrow { font-family: var(--mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--pitch); }
+h1 { font-family: var(--display); font-weight: 700; font-size: clamp(34px, 5vw, 52px); line-height: 1; margin: 0; letter-spacing: .005em; text-wrap: balance; }
+.lede { color: var(--ink-2); max-width: 68ch; margin: 0; }
+.controls { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: end; padding: 14px 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+.field { display: grid; gap: 4px; min-width: 0; flex: 1 1 260px; }
+label, .lbl { font-family: var(--mono); font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+input[type=search] { font: inherit; font-size: 16px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 7px; background: var(--bg); color: var(--ink); width: 100%; }
+input[type=search]:focus-visible, button:focus-visible, .toggle input:focus-visible + span { outline: 2px solid var(--s1); outline-offset: 2px; }
+.toggles { display: flex; flex-wrap: wrap; gap: 8px; }
+label.toggle { font-family: var(--body); text-transform: none; letter-spacing: 0; }
+.toggle { display: inline-flex; align-items: center; gap: 7px; cursor: pointer; font-size: 14px; color: var(--ink-2); padding: 7px 11px; border: 1px solid var(--line); border-radius: 999px; background: var(--bg); user-select: none; }
+.toggle input { accent-color: var(--s1); margin: 0; }
+.suggest { position: relative; }
+.suggest ul { position: absolute; z-index: 5; left: 0; right: 0; top: calc(100% + 4px); margin: 0; padding: 4px; list-style: none; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.12); max-height: 300px; overflow: auto; }
+.suggest li { padding: 7px 10px; border-radius: 5px; cursor: pointer; display: flex; justify-content: space-between; gap: 10px; }
+.suggest li span { color: var(--muted); font-size: 13px; white-space: nowrap; }
+.suggest li[aria-selected=true], .suggest li:hover { background: var(--chip); }
+.quick { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.quick button { font: inherit; font-size: 13px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--ink-2); cursor: pointer; }
+.quick button:hover { border-color: var(--s1); color: var(--ink); }
+
+.desk { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 22px; }
+@media (max-width: 860px) { .desk { grid-template-columns: 1fr; } }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px; min-width: 0; display: grid; gap: 12px; align-content: start; }
+.card-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; align-items: baseline; }
+.pname { font-family: var(--display); font-weight: 700; font-size: 32px; line-height: 1.05; margin: 0; }
+.pmeta { color: var(--ink-2); font-size: 14px; }
+.role-pill { font-family: var(--mono); font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase; padding: 4px 9px; border-radius: 999px; background: var(--chip); color: var(--pitch); white-space: nowrap; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13.5px; color: var(--ink-2); }
+.legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+.legend button { font: inherit; font-size: 12.5px; border: 0; background: none; color: var(--muted); cursor: pointer; text-decoration: underline; padding: 0; }
+svg text { font-family: var(--body); }
+#radar { width: 100%; max-width: 560px; justify-self: center; overflow: visible; }
+
+h2 { font-family: var(--display); font-weight: 600; font-size: 22px; margin: 0; letter-spacing: .01em; }
+.sub { color: var(--muted); font-size: 13px; margin: 0; }
+ol.short { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+ol.short li button { width: 100%; text-align: left; font: inherit; color: var(--ink); background: transparent; border: 1px solid transparent; border-radius: 8px; padding: 8px 10px; cursor: pointer; display: grid; grid-template-columns: 22px minmax(0,1fr) auto; gap: 10px; align-items: center; }
+ol.short li button:hover { background: var(--chip); }
+ol.short li button[aria-pressed=true] { border-color: var(--s2); background: var(--s2-soft); }
+.rk { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.nm { min-width: 0; }
+.nm b { font-weight: 600; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nm small { color: var(--muted); font-size: 12.5px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.score { display: grid; justify-items: end; gap: 3px; font-family: var(--mono); font-size: 13px; font-variant-numeric: tabular-nums; }
+.bar { width: 72px; height: 4px; border-radius: 2px; background: var(--grid); overflow: hidden; }
+.bar span { display: block; height: 100%; background: var(--s1); border-radius: 2px; }
+
+.tablewrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; font-variant-numeric: tabular-nums; }
+th, td { padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+thead th { font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+td.grp { font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--pitch); padding-top: 12px; }
+details summary { cursor: pointer; color: var(--ink-2); font-size: 14px; }
+
+.map-panel { display: grid; gap: 10px; }
+.mapwrap { overflow-x: auto; }
+#map { width: 100%; min-width: 680px; height: auto; display: block; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 22px; }
+.fact { display: grid; gap: 4px; align-content: start; }
+.fact .big { font-family: var(--display); font-weight: 700; font-size: 40px; line-height: 1; font-variant-numeric: tabular-nums; }
+.fact p { margin: 0; color: var(--ink-2); font-size: 14px; max-width: 46ch; }
+footer { color: var(--muted); font-size: 12.5px; }
+footer a { color: var(--ink-2); }
+#tip { position: fixed; pointer-events: none; z-index: 10; background: var(--ink); color: var(--bg); font-size: 12.5px; padding: 6px 9px; border-radius: 6px; max-width: 240px; line-height: 1.35; transform: translate(-50%, calc(-100% - 12px)); }
+#tip b { display: block; }
+@media (prefers-reduced-motion: no-preference) { .poly { transition: d .35s ease; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Premier League 2015/16 · 300 outfield players · StatsBomb event data</div>
+    <h1>Scout Room</h1>
+    <p class="lede">Pick a player to see his style profile and the players who play most like him. Similarity compares the shape of each player's per-90 profile across 24 metrics, so a quieter player with the same habits still matches.</p>
+  </header>
+
+  <section class="controls" aria-label="Choose player">
+    <div class="field suggest">
+      <label for="q">Player</label>
+      <input id="q" type="search" autocomplete="off" placeholder="Search a name or club" role="combobox" aria-expanded="false" aria-controls="sugg">
+      <ul id="sugg" role="listbox" hidden></ul>
+    </div>
+    <div class="field" style="flex: 2 1 320px">
+      <span class="lbl">Shortlist filters</span>
+      <div class="toggles">
+        <label class="toggle"><input id="f-pos" type="checkbox"><span>Same position only</span></label>
+        <label class="toggle"><input id="f-club" type="checkbox" checked><span>Other clubs only</span></label>
+      </div>
+    </div>
+    <div class="quick" aria-label="Examples"><span class="lbl">Try</span></div>
+  </section>
+
+  <section class="desk">
+    <article class="panel" aria-live="polite">
+      <div class="card-head">
+        <div>
+          <p class="pname" id="pname"></p>
+          <div class="pmeta" id="pmeta"></div>
+        </div>
+        <span class="role-pill" id="prole"></span>
+      </div>
+      <div class="legend" id="legend"></div>
+      <svg id="radar" viewBox="-250 -235 500 470" role="img" aria-label="Percentile radar"></svg>
+      <details>
+        <summary>Table view: per-90 values and percentiles</summary>
+        <div class="tablewrap"><table id="tbl"></table></div>
+      </details>
+    </article>
+
+    <aside class="panel">
+      <div>
+        <h2>Closest matches</h2>
+        <p class="sub" id="shortsub">Click a name to overlay him on the radar.</p>
+      </div>
+      <ol class="short" id="short"></ol>
+    </aside>
+  </section>
+
+  <section class="panel map-panel">
+    <div>
+      <h2>League style map</h2>
+      <p class="sub" id="mapsub">Every outfield player on the first two principal components of the style space. Blue dots share the selected player's role. Click any dot to scout him.</p>
+    </div>
+    <div class="mapwrap"><svg id="map" viewBox="0 0 1000 440" role="img" aria-label="Style map scatter"></svg></div>
+  </section>
+
+  <section class="panel">
+    <h2>Does it measure style or noise?</h2>
+    <div class="facts" id="facts"></div>
+  </section>
+
+  <footer>Percentiles are against players in the same position group with 900+ minutes. PAdj = possession-adjusted (scaled by 0.5 ÷ opponent possession). Data: <a href="https://github.com/statsbomb/open-data" target="_blank" rel="noopener">StatsBomb Open Data</a>.</footer>
+</div>
+<div id="tip" hidden></div>
+
+<script>
+const DATA = __DATA__;
+const P = DATA.players, LABELS = DATA.labels, N = LABELS.length;
+const byId = new Map(P.map(p => [p.id, p]));
+const GROUP = {CB:"Centre-back", FB:"Full-back", CM:"Central mid", AM:"Attacking mid", W:"Winger", FW:"Forward"};
+const $ = s => document.querySelector(s);
+const NS = "http://www.w3.org/2000/svg";
+const el = (tag, attrs = {}, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
+const short = n => n.length > 22 ? n.split(" ").slice(-1)[0] : n;
+
+let state = { id: null, cmp: null };
+try { const s = JSON.parse(localStorage.getItem("scout") || "null"); if (s && byId.has(s.id)) state.id = s.id; } catch (e) {}
+if (!state.id) state.id = P.find(p => p.name === "N'Golo Kanté").id;
+
+function sims(p) {
+  const pos = $("#f-pos").checked, club = $("#f-club").checked;
+  return P.filter(q => q.id !== p.id && (!pos || q.group === p.group) && (!club || q.team !== p.team))
+    .map(q => ({ q, s: (p.emb.reduce((a, v, i) => a + v * q.emb[i], 0) + 1) / 2 * 100 }))
+    .sort((a, b) => b.s - a.s).slice(0, 12);
+}
+
+// ---------- tooltip
+const tip = $("#tip");
+function showTip(e, html) { tip.innerHTML = html; tip.hidden = false; tip.style.left = e.clientX + "px"; tip.style.top = e.clientY + "px"; }
+function hideTip() { tip.hidden = true; }
+
+// ---------- radar
+const R = 165;
+const ang = i => -Math.PI / 2 + i * 2 * Math.PI / N;
+const pt = (i, v) => [Math.cos(ang(i)) * R * v / 100, Math.sin(ang(i)) * R * v / 100];
+function drawRadarBase() {
+  const svg = $("#radar"); svg.innerHTML = "";
+  // theme wedges (alternating fill) with group labels
+  let start = 0, k = 0;
+  for (const [g, n] of Object.entries(DATA.groups)) {
+    const a0 = ang(start) - Math.PI / N, a1 = ang(start + n - 1) + Math.PI / N;
+    const big = (a1 - a0) > Math.PI ? 1 : 0;
+    if (k % 2 === 0) el("path", { d: `M0 0 L${Math.cos(a0)*R} ${Math.sin(a0)*R} A${R} ${R} 0 ${big} 1 ${Math.cos(a1)*R} ${Math.sin(a1)*R} Z`, fill: "var(--chip)", opacity: .55 }, svg);
+    const am = (a0 + a1) / 2, rr = R + 58;
+    el("text", { x: Math.cos(am) * rr, y: Math.sin(am) * rr + 4, "text-anchor": "middle", fill: "var(--pitch)", "font-size": 10.5, "font-family": "var(--mono)", "letter-spacing": ".08em" }, svg).textContent = g.toUpperCase();
+    start += n; k++;
+  }
+  for (const v of [25, 50, 75, 100]) el("circle", { r: R * v / 100, fill: "none", stroke: "var(--grid)", "stroke-width": 1 }, svg);
+  for (const v of [50, 100]) el("text", { x: 3, y: -R * v / 100 - 3, fill: "var(--muted)", "font-size": 9 }, svg).textContent = v;
+  LABELS.forEach((l, i) => {
+    const [x, y] = pt(i, 100);
+    el("line", { x1: 0, y1: 0, x2: x, y2: y, stroke: "var(--grid)" }, svg);
+    const [lx, ly] = pt(i, 113), c = Math.cos(ang(i));
+    el("text", { x: lx, y: ly + 4, "text-anchor": Math.abs(c) < .15 ? "middle" : c > 0 ? "start" : "end", fill: "var(--ink-2)", "font-size": 11.5 }, svg).textContent = l;
+  });
+  el("g", { id: "polys" }, svg);
+}
+function drawPolys() {
+  const g = $("#polys"); g.innerHTML = "";
+  const series = [[byId.get(state.id), "var(--s1)", "var(--s1-soft)"]];
+  if (state.cmp) series.push([byId.get(state.cmp), "var(--s2)", "var(--s2-soft)"]);
+  for (const [p, c, soft] of series) {
+    const pts = p.pct.map((v, i) => pt(i, Math.max(v, 2)));
+    el("path", { class: "poly", d: "M" + pts.map(q => q.join(" ")).join("L") + "Z", fill: soft, stroke: c, "stroke-width": 2, "stroke-linejoin": "round" }, g);
+  }
+  for (const [p, c] of series) {
+    p.pct.forEach((v, i) => {
+      const [x, y] = pt(i, Math.max(v, 2));
+      el("circle", { cx: x, cy: y, r: 4, fill: c, stroke: "var(--panel)", "stroke-width": 2 }, g);
+      const hit = el("circle", { cx: x, cy: y, r: 11, fill: "transparent" }, g);
+      hit.addEventListener("pointermove", e => showTip(e, `<b>${p.name}</b>${LABELS[i]}: ${p.raw[i]}${i === LABELS.indexOf("Pass %") ? "%" : " per 90"} · ${v}th pct`));
+      hit.addEventListener("pointerleave", hideTip);
+    });
+  }
+}
+
+// ---------- shortlist
+function drawShort() {
+  const p = byId.get(state.id), list = sims(p), ol = $("#short"); ol.innerHTML = "";
+  const lo = Math.min(...list.map(x => x.s)) - 2;
+  list.forEach((x, i) => {
+    const li = document.createElement("li"), b = document.createElement("button");
+    b.setAttribute("aria-pressed", state.cmp === x.q.id);
+    b.innerHTML = `<span class="rk">${i + 1}</span><span class="nm"><b>${x.q.name}</b><small>${x.q.team} · ${x.q.role}</small></span><span class="score">${x.s.toFixed(1)}<span class="bar"><span style="width:${Math.max((x.s - lo) / (100 - lo) * 100, 4)}%"></span></span></span>`;
+    b.addEventListener("click", () => { state.cmp = state.cmp === x.q.id ? null : x.q.id; render(false); });
+    li.appendChild(b); ol.appendChild(li);
+  });
+  const f = [$("#f-pos").checked && GROUP[p.group].toLowerCase() + "s", $("#f-club").checked && "not at " + p.team].filter(Boolean);
+  $("#shortsub").textContent = `Similarity out of 100${f.length ? " · " + f.join(", ") : ""}. Click a name to overlay him on the radar.`;
+}
+
+// ---------- header, legend, table
+function drawHead() {
+  const p = byId.get(state.id), c = state.cmp && byId.get(state.cmp);
+  $("#pname").textContent = p.name;
+  $("#pmeta").textContent = `${p.team} · ${GROUP[p.group]} · ${p.minutes.toLocaleString()} min`;
+  $("#prole").textContent = p.role;
+  const lg = $("#legend");
+  lg.innerHTML = `<span><i style="background:var(--s1)"></i>${p.name}</span>` + (c ? `<span><i style="background:var(--s2)"></i>${c.name} (${c.team})</span><button id="clr">Clear comparison</button>` : `<span style="color:var(--muted)">Percentile vs ${GROUP[p.group].toLowerCase()}s</span>`);
+  const clr = $("#clr"); if (clr) clr.onclick = () => { state.cmp = null; render(false); };
+  let html = `<thead><tr><th>Metric</th><th>${short(p.name)} /90</th><th>pct</th>${c ? `<th>${short(c.name)} /90</th><th>pct</th>` : ""}</tr></thead><tbody>`;
+  let i = 0;
+  for (const [g, n] of Object.entries(DATA.groups)) {
+    html += `<tr><td class="grp" colspan="${c ? 5 : 3}">${g}</td></tr>`;
+    for (let j = 0; j < n; j++, i++) html += `<tr><td>${LABELS[i]}</td><td>${p.raw[i]}</td><td>${p.pct[i]}</td>${c ? `<td>${c.raw[i]}</td><td>${c.pct[i]}</td>` : ""}</tr>`;
+  }
+  $("#tbl").innerHTML = html + "</tbody>";
+}
+
+// ---------- map
+const M = { w: 1000, h: 440, l: 40, r: 16, t: 14, b: 34 };
+const xs = P.map(p => p.pc[0]), ys = P.map(p => p.pc[1]);
+const [x0, x1] = [Math.floor(Math.min(...xs)), Math.ceil(Math.max(...xs))], [y0, y1] = [Math.floor(Math.min(...ys)), Math.ceil(Math.max(...ys))];
+const sx = v => M.l + (v - x0) / (x1 - x0) * (M.w - M.l - M.r), sy = v => M.h - M.b - (v - y0) / (y1 - y0) * (M.h - M.t - M.b);
+function drawMap() {
+  const svg = $("#map"); svg.innerHTML = "";
+  for (let v = x0; v <= x1; v += 2) { el("line", { x1: sx(v), x2: sx(v), y1: M.t, y2: M.h - M.b, stroke: "var(--grid)" }, svg); el("text", { x: sx(v), y: M.h - M.b + 16, "text-anchor": "middle", fill: "var(--muted)", "font-size": 11 }, svg).textContent = v; }
+  for (let v = y0; v <= y1; v += 2) { el("line", { x1: M.l, x2: M.w - M.r, y1: sy(v), y2: sy(v), stroke: "var(--grid)" }, svg); el("text", { x: M.l - 8, y: sy(v) + 4, "text-anchor": "end", fill: "var(--muted)", "font-size": 11 }, svg).textContent = v; }
+  el("text", { x: M.w - M.r, y: M.h - 4, "text-anchor": "end", fill: "var(--ink-2)", "font-size": 11.5 }, svg).textContent = "PC1 → more attacking output";
+  el("text", { x: M.l + 4, y: M.t + 10, fill: "var(--ink-2)", "font-size": 11.5 }, svg).textContent = "PC2";
+  const me = byId.get(state.id), cmp = state.cmp && byId.get(state.cmp);
+  const order = [...P].sort((a, b) => (a.role === me.role) - (b.role === me.role));
+  for (const p of order) {
+    const same = p.role === me.role;
+    const c = el("circle", { cx: sx(p.pc[0]), cy: sy(p.pc[1]), r: same ? 5 : 4, fill: same ? "var(--s1)" : "var(--line)", stroke: "var(--panel)", "stroke-width": 1.5, style: "cursor:pointer" }, svg);
+    c.addEventListener("pointermove", e => showTip(e, `<b>${p.name}</b>${p.team} · ${p.role}`));
+    c.addEventListener("pointerleave", hideTip);
+    c.addEventListener("click", () => select(p.id));
+  }
+  const close = cmp && Math.hypot(sx(me.pc[0]) - sx(cmp.pc[0]), sy(me.pc[1]) - sy(cmp.pc[1])) < 60;
+  for (const [p, col, dy] of [[me, "var(--s1)", close ? 12 : 0], cmp && [cmp, "var(--s2)", close ? -12 : 0]].filter(Boolean)) {
+    const x = sx(p.pc[0]), y = sy(p.pc[1]) + dy;
+    el("circle", { cx: x, cy: y - dy, r: 9, fill: col, stroke: "var(--panel)", "stroke-width": 2.5 }, svg);
+    const right = x < M.w - 180;
+    el("text", { x: x + (right ? 14 : -14), y: y + 4, "text-anchor": right ? "start" : "end", fill: "var(--ink)", "font-size": 13, "font-weight": 600, stroke: "var(--panel)", "stroke-width": 4, "paint-order": "stroke" }, svg).textContent = p.name;
+  }
+  $("#mapsub").textContent = `Every outfield player on the first two principal components of the style space. Blue dots are the ${P.filter(p => p.role === me.role).length} players in ${me.name}'s role (${me.role}). Click any dot to scout him.`;
+}
+
+// ---------- facts
+function drawFacts() {
+  const m = DATA.metrics, pc = v => Math.round(v * 100) + "%";
+  $("#facts").innerHTML = [
+    [pc(m.top5), `of players found their own second-half profile in the top 5 matches for their first-half profile, out of ${m.candidates} candidates.`],
+    [pc(m.position_only_top5), "is the top-5 hit rate you would get from knowing only a player's position. Random guessing gives " + (m.random_top5 * 100).toFixed(1) + "%."],
+    [m.median_rank.toFixed(0), `is the median rank of a player's own profile. The model was fitted on matches before ${new Date(m.cutoff_date).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })} only.`],
+  ].map(([b, t]) => `<div class="fact"><span class="big">${b}</span><p>${t}</p></div>`).join("");
+}
+
+// ---------- search
+const q = $("#q"), ul = $("#sugg");
+let hits = [], active = -1;
+const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+function openSugg() {
+  const t = norm(q.value.trim());
+  hits = t ? P.filter(p => norm(p.name + " " + p.team).includes(t)).sort((a, b) => b.minutes - a.minutes).slice(0, 10) : [];
+  active = hits.length ? 0 : -1;
+  ul.innerHTML = hits.length ? hits.map((p, i) => `<li role="option" data-id="${p.id}" aria-selected="${i === active}">${p.name}<span>${p.team}</span></li>`).join("") : (t ? `<li aria-disabled="true">No match. Players need 900+ minutes.</li>` : "");
+  ul.hidden = !t; q.setAttribute("aria-expanded", !ul.hidden);
+}
+q.addEventListener("input", openSugg);
+q.addEventListener("keydown", e => {
+  if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); if (!hits.length) return; active = (active + (e.key === "ArrowDown" ? 1 : -1) + hits.length) % hits.length; [...ul.children].forEach((li, i) => li.setAttribute("aria-selected", i === active)); }
+  else if (e.key === "Enter" && active >= 0) { select(hits[active].id); }
+  else if (e.key === "Escape") { ul.hidden = true; }
+});
+ul.addEventListener("pointerdown", e => { const li = e.target.closest("li[data-id]"); if (li) { e.preventDefault(); select(+li.dataset.id); } });
+q.addEventListener("blur", () => setTimeout(() => ul.hidden = true, 100));
+["#f-pos", "#f-club"].forEach(s => $(s).addEventListener("change", () => { state.cmp = null; render(true); }));
+
+const quick = $(".quick");
+for (const n of ["N'Golo Kanté", "Mesut Özil", "Riyad Mahrez", "Harry Kane", "Toby Alderweireld", "Héctor Bellerín"]) {
+  const p = P.find(x => x.name === n); if (!p) continue;
+  const b = document.createElement("button"); b.textContent = n.split(" ").slice(-1)[0]; b.onclick = () => select(p.id); quick.appendChild(b);
+}
+
+function select(id) { state = { id, cmp: null }; q.value = ""; ul.hidden = true; try { localStorage.setItem("scout", JSON.stringify({ id })); } catch (e) {} render(true); }
+function render(full) {
+  if (!state.cmp && full !== false) { const s = sims(byId.get(state.id)); state.cmp = s[0].q.id; }
+  drawHead(); drawPolys(); drawShort(); drawMap();
+}
+drawRadarBase(); drawFacts(); render(true);
+</script>

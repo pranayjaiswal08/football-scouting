@@ -1,0 +1,17 @@
+# downloaded data (recreated by `python run.py`)
+data/raw/
+data/processed/*.parquet
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+
+# notebooks / editors / OS
+.ipynb_checkpoints/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
